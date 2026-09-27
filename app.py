@@ -1,6 +1,8 @@
-import streamlit as st
+from pathlib import Path
+
 import pandas as pd
 import plotly.express as px
+import streamlit as st
 
 # ================================
 # CONFIGURAÇÃO DA PÁGINA
@@ -11,13 +13,15 @@ st.set_page_config(
     layout="wide",
 )
 
+ARQUIVO_DADOS = Path(__file__).with_name("dados-imersao-final.csv")
+COLUNAS_FILTRO = ["ano", "senioridade", "contrato", "tamanho_empresa"]
+
 # ================================
 # FUNÇÃO PARA CARREGAR DADOS
 # ================================
 @st.cache_data
 def carregar_dados():
-    url = "https://raw.githubusercontent.com/vqrca/dashboard_salarios_dados/refs/heads/main/dados-imersao-final.csv"
-    return pd.read_csv(url)
+    return pd.read_csv(ARQUIVO_DADOS)
 
 # ================================
 # FILTROS NA SIDEBAR
@@ -25,17 +29,15 @@ def carregar_dados():
 def aplicar_filtros(data):
     st.sidebar.header("🔍 Filtros")
     filtros = {}
-    for coluna in ["ano", "senioridade", "contrato", "tamanho_empresa"]:
+    for coluna in COLUNAS_FILTRO:
         valores = sorted(data[coluna].unique())
         filtros[coluna] = st.sidebar.multiselect(
             coluna.capitalize(), valores, default=valores
         )
-    return data[
-        (data['ano'].isin(filtros['ano'])) &
-        (data['senioridade'].isin(filtros['senioridade'])) &
-        (data['contrato'].isin(filtros['contrato'])) &
-        (data['tamanho_empresa'].isin(filtros['tamanho_empresa']))
-    ]
+    mascara = pd.Series(True, index=data.index)
+    for coluna in COLUNAS_FILTRO:
+        mascara &= data[coluna].isin(filtros[coluna])
+    return data[mascara]
 
 # ================================
 # MÉTRICAS PRINCIPAIS
@@ -109,7 +111,11 @@ def grafico_salario_por_pais(data):
 # ================================
 # APP
 # ================================
-df = carregar_dados()
+try:
+    df = carregar_dados()
+except FileNotFoundError:
+    st.error(f"Arquivo de dados não encontrado: {ARQUIVO_DADOS.name}")
+    st.stop()
 df_filtrado = aplicar_filtros(df)
 
 st.title("🎲 Dashboard de Análise de Salários na Área de Dados")

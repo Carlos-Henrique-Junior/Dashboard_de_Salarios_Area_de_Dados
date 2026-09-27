@@ -5,6 +5,30 @@ Este projeto apresenta uma análise exploratória detalhada sobre os salários n
 
 Este notebook é um excelente ponto de partida para quem busca compreender as tendências salariais e os fatores que moldam a compensação no crescente campo de dados.
 
+## 🚀 Como Executar o Dashboard
+
+O projeto inclui um dashboard interativo em Streamlit (`app.py`) que consome o conjunto de dados limpo `dados-imersao-final.csv` (versão local, sem dependência de rede).
+
+1. Instale as dependências:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+2. Execute o dashboard:
+
+```bash
+streamlit run app.py
+```
+
+Para rodar os testes automatizados (verificação de execução do app e contrato dos dados):
+
+```bash
+pytest
+```
+
 📓 Conteúdo do Notebook
 A análise foi estruturada em etapas claras, desde a importação até a visualização dos insights:
 
