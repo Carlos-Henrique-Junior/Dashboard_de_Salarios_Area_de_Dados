@@ -23,9 +23,10 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Para rodar os testes automatizados (verificação de execução do app e contrato dos dados):
+Para rodar os testes automatizados (verificação de execução do app e contrato dos dados), após instalar as dependências do projeto:
 
 ```bash
+pip install -r requirements-dev.txt
 pytest
 ```
 
